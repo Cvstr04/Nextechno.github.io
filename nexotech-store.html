@@ -755,6 +755,81 @@
   </div>
 </footer>
 
+<!-- CHECKOUT MERCADO PAGO -->
+<div id="checkout-overlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:300;display:none;align-items:flex-start;justify-content:center;padding:20px 20px 60px;overflow-y:auto" onclick="closeCheckout(event)">
+  <div style="background:var(--bg3);border:1px solid rgba(168,85,247,0.3);border-radius:20px;padding:32px;max-width:520px;width:100%;margin:auto;animation:fadeUp 0.3s ease both" onclick="event.stopPropagation()">
+
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <div>
+        <div style="font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--text)">Checkout</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:2px">Pago seguro con Mercado Pago</div>
+      </div>
+      <button onclick="closeCheckout()" style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1">✕</button>
+    </div>
+
+    <!-- Resumen productos -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--purple-light);margin-bottom:10px">Tu pedido</div>
+      <div id="checkout-items"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;margin-top:4px">
+        <span style="font-size:14px;color:var(--muted)">Total a pagar</span>
+        <span id="checkout-total" style="font-family:'Orbitron',monospace;font-size:20px;font-weight:700;color:var(--purple-glow)"></span>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid rgba(124,58,237,0.2);margin-bottom:20px"></div>
+
+    <!-- Formulario -->
+    <div id="mp-form-area">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--purple-light);margin-bottom:14px">Datos de contacto y envío</div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div>
+          <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px">Nombre completo</label>
+          <input id="mp-nombre" type="text" placeholder="Juan Pérez" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(124,58,237,0.25);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;outline:none">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px">Teléfono</label>
+          <input id="mp-telefono" type="tel" placeholder="+56 9 1234 5678" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(124,58,237,0.25);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;outline:none">
+        </div>
+      </div>
+
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px">Email</label>
+        <input id="mp-email" type="email" placeholder="tucorreo@email.com" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(124,58,237,0.25);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;outline:none">
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:5px">Dirección de envío</label>
+        <input id="mp-direccion" type="text" placeholder="Calle, número, comuna, ciudad" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(124,58,237,0.25);border-radius:8px;padding:10px 12px;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;outline:none">
+      </div>
+
+      <!-- Error -->
+      <div id="mp-error" style="display:none;background:rgba(220,38,38,0.15);border:1px solid rgba(220,38,38,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:#fca5a5;margin-bottom:14px"></div>
+
+      <!-- Métodos de pago aceptados -->
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+        <span style="font-size:11px;color:var(--muted)">Acepta:</span>
+        <span style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--muted)">Débito</span>
+        <span style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--muted)">Crédito</span>
+        <span style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--muted)">Transferencia</span>
+        <span style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--muted)">Webpay</span>
+      </div>
+
+      <!-- Botón pago -->
+      <button id="mp-pay-btn" onclick="procesarPago()" style="width:100%;background:linear-gradient(135deg,#009ee3,#00b1ea);border:none;border-radius:10px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;padding:14px;cursor:pointer;letter-spacing:0.5px;transition:opacity 0.2s">
+        💳 Pagar con Mercado Pago
+      </button>
+
+      <div style="text-align:center;margin-top:12px;font-size:11px;color:var(--muted)">
+        🔒 Pago 100% seguro · Encriptación SSL
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- TOAST -->
 <div id="toast">
   <span class="t-icon">✅</span>
@@ -850,7 +925,112 @@ function showToast(name) {
 }
 
 function openCart() {
-  alert(`Carrito: ${cart.length} producto(s)\nTotal: $${cart.reduce((a,p)=>a+p.price,0).toLocaleString('es-CL')}\n\n(Integra pasarela de pago aquí: Webpay, Mercado Pago, etc.)`);
+  if (cart.length === 0) {
+    showToastMsg('Tu carrito está vacío 😅');
+    return;
+  }
+  openCheckout();
+}
+
+function showToastMsg(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-name').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+/* ── CHECKOUT MERCADO PAGO ── */
+const MP_PUBLIC_KEY = 'APP_USR-efaa3de9-95d4-436f-b1f2-6bd89b1c5f05'; // ← Reemplaza con tu clave de Mercado Pago
+
+function openCheckout() {
+  const total = cart.reduce((a, p) => a + p.price, 0);
+  const itemsHtml = cart.map(p =>
+    `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(124,58,237,0.15)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:22px">${p.icon}</span>
+        <span style="font-size:13px;color:var(--text);max-width:180px;line-height:1.3">${p.name}</span>
+      </div>
+      <span style="font-family:'Orbitron',monospace;font-size:13px;color:var(--purple-glow);white-space:nowrap">$${p.price.toLocaleString('es-CL')}</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('checkout-items').innerHTML = itemsHtml;
+  document.getElementById('checkout-total').textContent = '$' + total.toLocaleString('es-CL');
+  const overlay = document.getElementById('checkout-overlay');
+  overlay.style.display = 'flex';
+}
+
+function closeCheckout(e) {
+  if (!e || e.target === document.getElementById('checkout-overlay')) {
+    document.getElementById('checkout-overlay').style.display = 'none';
+  }
+}
+
+async function procesarPago() {
+  const nombre  = document.getElementById('mp-nombre').value.trim();
+  const email   = document.getElementById('mp-email').value.trim();
+  const telefono = document.getElementById('mp-telefono').value.trim();
+  const direccion = document.getElementById('mp-direccion').value.trim();
+
+  if (!nombre || !email || !telefono || !direccion) {
+    document.getElementById('mp-error').textContent = 'Por favor completa todos los campos.';
+    document.getElementById('mp-error').style.display = 'block';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('mp-error').textContent = 'Ingresa un email válido.';
+    document.getElementById('mp-error').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('mp-error').style.display = 'none';
+  const btn = document.getElementById('mp-pay-btn');
+  btn.disabled = true;
+  btn.textContent = 'Procesando...';
+
+  const total = cart.reduce((a, p) => a + p.price, 0);
+  const items = cart.map(p => ({
+    title: p.name,
+    unit_price: p.price,
+    quantity: 1,
+    currency_id: 'CLP'
+  }));
+
+  try {
+    const resp = await fetch('http://localhost:4000/api/create-preference', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items,
+        payer: { name: nombre, email, phone: { number: telefono } },
+        shipments: { receiver_address: { street_name: direccion } }
+      })
+    });
+    const data = await resp.json();
+    // Redirige a la pasarela de Mercado Pago
+    window.location.href = data.sandbox_init_point;
+
+  } catch (err) {
+    document.getElementById('mp-error').textContent = 'Error al conectar con Mercado Pago. Intenta de nuevo.';
+    document.getElementById('mp-error').style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '💳 Pagar con Mercado Pago';
+  }
+}
+
+function showEstadoPago(estado) {
+  const box = document.getElementById('mp-form-area');
+  if (estado === 'demo') {
+    box.innerHTML = `
+      <div style="text-align:center;padding:24px 0">
+        <div style="font-size:48px;margin-bottom:12px">🎉</div>
+        <div style="font-family:'Orbitron',monospace;font-size:16px;color:var(--purple-glow);margin-bottom:8px">¡Modo demo activo!</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6;max-width:300px;margin:0 auto">
+          Para procesar pagos reales, reemplaza <code style="color:var(--accent2)">TU_PUBLIC_KEY_AQUI</code> con tu clave de Mercado Pago y conecta tu backend.
+        </div>
+        <button onclick="closeCheckout()" style="margin-top:20px;background:linear-gradient(135deg,var(--purple),var(--accent));border:none;border-radius:8px;color:white;font-family:'Syne',sans-serif;font-weight:600;font-size:14px;padding:12px 28px;cursor:pointer">Entendido</button>
+      </div>`;
+  }
 }
 
 function openModal(id) {
